@@ -5,12 +5,12 @@ function App() {
     const [listening, setListening] = useState(false)
 
     const startListening = () => {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
         const recognition = new SpeechRecognition()
         recognition.lang = 'en-US'
         recognition.interimResults = false
 
-        recognition.onresult = (event) => {
+        recognition.onresult = (event: any) => {
             const text = event.results[0][0].transcript
             setTranscript(text)
             window.speechSynthesis.speak(new SpeechSynthesisUtterance(text))
