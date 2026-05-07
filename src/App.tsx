@@ -7,16 +7,23 @@ function App() {
     const startListening = () => {
         const utterance = new SpeechSynthesisUtterance('')
         window.speechSynthesis.speak(utterance)
-        
+
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
         const recognition = new SpeechRecognition()
         recognition.lang = 'en-US'
         recognition.interimResults = false
 
-        recognition.onresult = (event: any) => {
+        recognition.onresult = async (event: any) => {
             const text = event.results[0][0].transcript
             setTranscript(text)
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance(text))
+
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: text }),
+            })
+            const data = await res.json()
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(data.respons))
         }
 
         recognition.onend = () => setListening(false)
