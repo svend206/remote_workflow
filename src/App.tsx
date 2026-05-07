@@ -3,6 +3,7 @@ import { useState } from 'react'
 function App() {
     const [transcript, setTranscript] = useState('')
     const [listening, setListening] = useState(false)
+    const [reply, setReply] = useState('')
 
     const startListening = () => {
         const utterance = new SpeechSynthesisUtterance('')
@@ -22,7 +23,8 @@ function App() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ prompt: text }),
             })
-            const data = await res.json()
+            const data = await res.json() 
+            setReply(data.response)
             window.speechSynthesis.speak(new SpeechSynthesisUtterance(data.response))
         }
 
@@ -39,6 +41,7 @@ function App() {
                 {listening ? 'Listening...' : 'Tap to speak'}
             </button>
             {transcript && <p>{transcript}</p>}
+            {reply && <p>{reply}</p>}
         </div>
     )
 }
