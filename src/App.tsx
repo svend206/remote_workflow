@@ -40,8 +40,8 @@ function App() {
             <button onClick={startListening} disabled={listening}>
                 {listening ? 'Listening...' : 'Tap to speak'}
             </button>
-            {transcript && <p>{transcript}</p>}
-            {reply && <p>{reply}</p>}
+            {transcript && <p><strong>ME:</strong>{transcript}</p>}
+            {reply && <p><strong>Claude:</strong>{reply}</p>}
         </div>
     )
 }
