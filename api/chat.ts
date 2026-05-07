@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk'
-const client = new Anthropic({apiKey: process.env.ANTHROPIC_APIKEY })
+const client = new Anthropic({apiKey: process.env.ANTHROPIC_API_KEY })
 export default async function handler(req: any, res: any) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' })
@@ -7,7 +7,7 @@ export default async function handler(req: any, res: any) {
     const { prompt } = req.body
     const message = await client.messages.create({
         model: 'claude-opus-4-7',
-        max_tokens: 1024
+        max_tokens: 1024,
         messages: [{ role: 'user', content: prompt }],
 
     })

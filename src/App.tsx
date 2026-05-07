@@ -23,7 +23,7 @@ function App() {
                 body: JSON.stringify({ prompt: text }),
             })
             const data = await res.json()
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance(data.respons))
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(data.response))
         }
 
         recognition.onend = () => setListening(false)
