@@ -1,13 +1,11 @@
 import Anthropic from '@anthropic-ai/sdk'                       
 import { createClient } from '@supabase/supabase-js'                                                          
-import { VoyageAIClient } from 'voyageai'
                                                                                                                 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 const supabase = createClient(                                                                                
     process.env.SUPABASE_URL!,                                    
     process.env.SUPABASE_ANON_KEY!                                                                              
-)
-const voyage = new VoyageAIClient({ apiKey: process.env.VOYAGE_API_KEY })                                     
+)                      
                                                                                                                 
 export default async function handler(req: any, res: any) {
     if (req.method !== 'POST') {                                                                                
@@ -17,11 +15,16 @@ export default async function handler(req: any, res: any) {
     const { prompt } = req.body                                                                                 
                                                                   
     // Generate embedding for the prompt
-    const embeddingResult = await voyage.embed({
-      input: [prompt],                                                                                          
-      model: 'voyage-3',
-    })                                                                                                          
-    const embedding = embeddingResult.data![0].embedding!         
+    const embeddingRes = await fetch('https://api.voyageai.com/v1/embeddings', {
+        method: 'POST',                                                                                             
+        headers: {
+            'Content-Type': 'application/json',                                                                       
+            'Authorization': `Bearer ${process.env.VOYAGE_API_KEY}`,    
+        },                                                                                                          
+        body: JSON.stringify({ input: [prompt], model: 'voyage-3' }),
+    })                                                                                                            
+    const embeddingJson = await embeddingRes.json()                 
+    const embedding = embeddingJson.data[0].embedding 
                                                                                                                 
     // Search for similar past entries
     const { data: similarEntries } = await supabase.rpc('match_entries', {                                      
