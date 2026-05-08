@@ -52,12 +52,11 @@ export default async function handler(req: any, res: any) {
     const llm_response = (message.content[0] as any).text                                                       
                                                                   
     // Save entry with embedding                                                                                
-    await supabase.from('entries').insert({                       
-      prompt,
-      llm_response,                                                                                             
-      model_version: 'claude-opus-4-7',
-      embedding,                                                                                                
-    })                                                            
+    const { data: inserted } = await supabase
+        .from('entries')                                                                                            
+        .insert({ prompt, llm_response, model_version: 'claude-opus-4-7', embedding })
+        .select('id')                                                                                               
+        .single()                                                
 
-    res.status(200).json({ response: llm_response })                                                            
+    res.status(200).json({ response: llm_response, entryId: inserted?.id })                                                     
   }
